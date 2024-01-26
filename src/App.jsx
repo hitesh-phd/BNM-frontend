@@ -1,17 +1,16 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
 import {
   Route,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute";
-import { ROUTES } from "./utils/RouterConfig";
+
+import "./App.css";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { ROUTES } from "./utils/RouterConfig";
 
 function App() {
   const [count, setCount] = useState(0);
