@@ -1,15 +1,11 @@
-/* eslint-disable no-undef */
-/* eslint-disable import/no-commonjs */
-/* eslint-disable @typescript-eslint/no-var-requires */
-
-const { fontFamily } = require("tailwindcss/defaultTheme");
-const plugin = require("tailwindcss/plugin");
+/** @type {import('tailwindcss').Config} */
+import plugin from "tailwindcss/plugin";
+import { fontFamily } from "tailwindcss/defaultTheme";
 const iOSHeight = require("@rvxlab/tailwind-plugin-ios-full-height");
 
-/** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class", '[data-theme="dark"]'],
-  content: ["./src/**/*.{html,js}"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
