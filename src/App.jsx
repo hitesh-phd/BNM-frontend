@@ -1,19 +1,17 @@
-import { useState } from "react";
 import {
   Route,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-
 import "./App.css";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+
 import ProtectedRoute from "./components/ProtectedRoute";
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
 import { ROUTES } from "./utils/RouterConfig";
 
 function App() {
-  const [count, setCount] = useState(0);
   const isAuthenticated = false;
 
   const router = createBrowserRouter(
@@ -24,8 +22,8 @@ function App() {
           <Route path="/about" element={<div>About</div>} />
           <Route path="/contact" element={<div>Contact</div>} />
         </Route>
-        <Route path={ROUTES.SIGN_IN} element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path={ROUTES.SIGN_IN} element={<SignInPage />} />
+        <Route path={ROUTES.SIGN_UP} element={<SignUpPage />} />
       </>
     )
   );
