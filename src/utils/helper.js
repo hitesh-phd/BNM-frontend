@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 export const successToast = (response, message) => {
   toast.success(response?.data?.message || message);
 };
@@ -16,6 +18,7 @@ export const errorToast = ({ error, message }) => {
 
   toast.error(
     error?.response?.data?.error ||
+      error?.response?.data?.message ||
       message ||
       "Something went wrong, please try again later."
   );

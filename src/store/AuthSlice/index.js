@@ -2,10 +2,10 @@ import axios from "axios";
 import { createSlice } from "@reduxjs/toolkit";
 
 import { API_BASE_URL, HTTP_METHODS, API_HEADERS } from "@/utils/https";
-import { errorToast, successToast } from "@utils/helper";
+import { errorToast, successToast } from "@/utils/helper";
 
 const initialState = {
-  isLoggedIn: false,
+  isAuthenticated: false,
   userId: null,
   token: null,
   refreshToken: null,
@@ -16,9 +16,9 @@ export const AuthSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      const { _id, accessToken, refreshToken } = action.payload?.user;
-      // state.isLoggedIn = true;
-      state.userId = _id;
+      const { accessToken, refreshToken, user } = action.payload?.data || {};
+      state.isAuthenticated = true;
+      state.userId = user._id;
       state.token = accessToken;
       state.refreshToken = refreshToken;
     },
@@ -37,8 +37,8 @@ export const loginAction =
       const response = await axios({
         method: HTTP_METHODS.POST,
         url: `${API_BASE_URL}/api/v1/users/login`,
-        data: data,
         headers: API_HEADERS,
+        data,
       });
       dispatch(login(response.data));
       onSuccess();
@@ -174,8 +174,24 @@ export const logoutAction = (token) => async (dispatch) => {
   }
 };
 
+export const refreshTokenAction = (token) => async (dispatch) => {
+  const localHeader = { ...API_HEADERS, Authorization: `Token ${token}` };
+  try {
+    const response = await axios({
+      method: HTTP_METHODS.GET,
+      url: `${API_BASE_URL}/user/api/refresh-token/`,
+      headers: localHeader,
+    });
+    dispatch(login(response.data));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const selectUserId = (state) => state.Auth.userId;
 export const selectToken = (state) => state.Auth.token;
-export const selectIsLoggedIn = (state) => state.Auth.isLoggedIn;
+export const selectRefreshToken = (state) => state.Auth.refreshToken;
+export const selectIsAuthenticated = (state) => state.Auth.isAuthenticated;
 
 export const { login, logout } = AuthSlice.actions;
 export default AuthSlice.reducer;

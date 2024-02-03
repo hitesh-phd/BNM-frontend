@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast";
 
 import App from "./App.jsx";
 import "./index.css";
-import store from "@store/store.js";
+import { store } from "./store/store.js";
 
 const toastOptions = {
   duration: 3000,
