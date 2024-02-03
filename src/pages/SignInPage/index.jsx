@@ -1,20 +1,19 @@
 import { useState } from "react";
-
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string } from "yup";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import InputField from "@/components/InputField";
 import Icon from "@/components/Icon";
 import RingLoader from "@/components/Loaders/RingLoader";
 import AuthContainer from "@/components/Container/AuthContainer";
 import { ROUTES } from "@/utils/RouterConfig";
+import { loginAction } from "@/store/AuthSlice/";
 
 const signInFormSchema = object().shape({
-  email: string()
-    .email("Email is invalid")
-    .required("Email is a required field"),
+  email: string().required("Username/Email is a required field"),
   password: string()
     .required("Password is a required field")
     .min(8, "Password is too short - should be 8 chars minimum."),
@@ -22,6 +21,8 @@ const signInFormSchema = object().shape({
 
 const SignInPage = ({ onClick }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
@@ -32,17 +33,31 @@ const SignInPage = ({ onClick }) => {
     resolver: yupResolver(signInFormSchema),
   });
 
+  // Destructuring the form methods and errors for input fields validation from react-hook-form
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = form;
 
+  // Function for navigate to Home page after successful login
+  const navigateToHomePage = () => {
+    navigate(ROUTES.HOME);
+  };
+
+  // Function for submit the form data to login
   const onSubmit = (data) => {
     const payload = {
       username: data.email,
       password: data.password,
     };
+    dispatch(
+      loginAction({
+        data: payload,
+        setIsLoading,
+        onSuccess: navigateToHomePage,
+      })
+    );
   };
 
   // Function for navigate to Sign Up page
@@ -62,7 +77,7 @@ const SignInPage = ({ onClick }) => {
             className="mb-4"
             classInput="bg-n-2 border-n-2 focus:bg-n-1"
             placeholder="example.email@gmail.com"
-            type="email"
+            type="text"
             autoComplete="email"
             error={errors.email?.message}
             {...register("email")}
@@ -94,7 +109,7 @@ const SignInPage = ({ onClick }) => {
                 <p>Sign in</p>
               </>
             ) : (
-              <RingLoader />
+              <RingLoader ringClassName="border-white w-9 h-9" />
             )}
           </button>
           <div className="mt-5 text-center text-black">
