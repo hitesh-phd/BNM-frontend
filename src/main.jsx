@@ -1,9 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
 import { Toaster } from "react-hot-toast";
 
 import App from "./App.jsx";
 import "./index.css";
+import store from "@store/store.js";
 
 const toastOptions = {
   duration: 3000,
@@ -35,14 +39,20 @@ const toastOptions = {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+const persistor = persistStore(store);
+
 root.render(
-  <>
-    <App />
-    <Toaster
-      containerStyle={{ bottom: 40, left: 20, right: 20 }}
-      position="bottom-center"
-      gutter={10}
-      toastOptions={toastOptions}
-    />
-  </>
+  <React.StrictMode>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+        <Toaster
+          containerStyle={{ bottom: 40, left: 20, right: 20 }}
+          position="bottom-center"
+          gutter={10}
+          toastOptions={toastOptions}
+        />
+      </PersistGate>
+    </Provider>
+  </React.StrictMode>
 );
