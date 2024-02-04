@@ -152,7 +152,7 @@ export default {
             {},
         },
         ".btn": {
-          "@apply inline-flex items-center justify-center sm:h-12 h-10 sm:px-5 px-3.5 border-2 rounded-lg base2 font-semibold transition-colors disabled:opacity-20 disabled:pointer-events-none":
+          "@apply inline-flex items-center justify-center sm:h-12 h-10 sm:px-5 px-3.5 border-2 rounded-lg base2 font-semibold transition-colors disabled:opacity-40 disabled:pointer-events-none":
             {},
         },
         ".btn svg": {
