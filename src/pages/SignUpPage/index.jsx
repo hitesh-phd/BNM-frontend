@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string } from "yup";
 import { useNavigate } from "react-router-dom";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 import InputField from "@/components/InputField";
 import RingLoader from "@/components/Loaders/RingLoader";
@@ -35,6 +36,10 @@ const SignUpPage = ({ onClick }) => {
   const [isGstNumberVerified, setGstNumberVerified] = useState(null);
   const [isVerifyingGstNumber, setVerifyingGstNumber] = useState(false);
   const [isVerifyingUserName, setVerifyingUserName] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
+  });
 
   const form = useForm({
     defaultValues: {
@@ -133,6 +138,28 @@ const SignUpPage = ({ onClick }) => {
     }
   };
 
+  const toggleShowPassword = (name) => {
+    setShowPassword((prevState) => ({
+      ...prevState,
+      [name]: !prevState[name],
+    }));
+  };
+
+  const RenderPasswordIcon = ({ name }) =>
+    showPassword[name] ? (
+      <IoEyeOutline
+        className="w-6 h-6 cursor-pointer fill-n-4/50"
+        title="Hide password"
+        onClick={() => toggleShowPassword(name)}
+      />
+    ) : (
+      <IoEyeOffOutline
+        className="w-6 h-6 cursor-pointer fill-n-4/50"
+        title="Show password"
+        onClick={() => toggleShowPassword(name)}
+      />
+    );
+
   return (
     <AuthContainer>
       <div className="w-full mx-auto sm:max-w-xl">
@@ -142,6 +169,7 @@ const SignUpPage = ({ onClick }) => {
         <form action="" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-end justify-between mb-4 gap-x-4">
             <InputField
+              name="gstNumber"
               label="GST Number"
               className="w-full "
               classInput={`bg-n-2 border-n-2 focus:bg-n-1 ${
@@ -176,6 +204,7 @@ const SignUpPage = ({ onClick }) => {
           </div>
           <div className="flex items-end justify-between mb-4 gap-x-4">
             <InputField
+              name="username"
               label="Username"
               className="w-full"
               classInput={`bg-n-2 border-n-2 focus:bg-n-1 ${
@@ -207,6 +236,7 @@ const SignUpPage = ({ onClick }) => {
             </button>
           </div>
           <InputField
+            name="email"
             label="Email"
             className="mb-4"
             classInput="bg-n-2 border-n-2 focus:bg-n-1"
@@ -217,22 +247,26 @@ const SignUpPage = ({ onClick }) => {
             {...register("email")}
           />
           <InputField
+            name="password"
             label="Password"
             className="mb-2"
             classInput="bg-n-2 border-n-2"
             placeholder="Enter at least 8+ characters "
-            type="password"
             autoComplete="current-password"
+            type={showPassword.password ? "text" : "password"}
+            rightIcon={<RenderPasswordIcon name="password" />}
             error={errors.password?.message}
             {...register("password")}
           />
           <InputField
+            name="confirmPassword"
             label="Confirm Password"
             className="mb-2"
             classInput="bg-n-2 border-n-2"
             placeholder="Enter at least 8+ characters "
-            type="password"
             autoComplete="Confirm-password"
+            type={showPassword.confirmPassword ? "text" : "password"}
+            rightIcon={<RenderPasswordIcon name="confirmPassword" />}
             error={errors.confirmPassword?.message}
             {...register("confirmPassword")}
           />
