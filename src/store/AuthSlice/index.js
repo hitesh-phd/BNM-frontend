@@ -1,7 +1,6 @@
-import axios from "axios";
+// Redux slice
 import { createSlice } from "@reduxjs/toolkit";
-
-import { API_BASE_URL, HTTP_METHODS, API_HEADERS } from "@/utils/https";
+import { apiClient } from "@/utils/https";
 import { errorToast, successToast } from "@/utils/helper";
 
 const initialState = {
@@ -34,12 +33,7 @@ export const loginAction =
   async (dispatch) => {
     setIsLoading(true);
     try {
-      const response = await axios({
-        method: HTTP_METHODS.POST,
-        url: `${API_BASE_URL}/api/v1/users/login`,
-        headers: API_HEADERS,
-        data,
-      });
+      const response = await apiClient.post("/users/login", data);
       dispatch(login(response.data));
       onSuccess();
       successToast(response, "Logged in successfully");
@@ -55,12 +49,7 @@ export const googleLoginAction =
   async (dispatch) => {
     setIsLoading(true);
     try {
-      const response = await axios({
-        method: HTTP_METHODS.POST,
-        url: `${API_BASE_URL}/user/api/googlelogin/`,
-        data: data,
-        headers: API_HEADERS,
-      });
+      const response = await apiClient.post("/user/api/googlelogin/", data);
       dispatch(login(response.data));
       onSuccess();
       successToast(response, "Logged in successfully");
@@ -76,13 +65,8 @@ export const registerAction =
   async () => {
     setIsLoading(true);
     try {
-      await axios({
-        method: HTTP_METHODS.POST,
-        url: `${API_BASE_URL}/user/api/register/`,
-        data: data,
-        headers: API_HEADERS,
-      });
-      // redirect to login page`
+      await apiClient.post("/user/api/register/", data);
+      // redirect to login page
       window.location.href = "/login";
       successToast("", "Registered successfully");
     } catch (error) {
@@ -102,12 +86,7 @@ export const forgotPasswordAction =
   async () => {
     setIsLoading(true);
     try {
-      const response = await axios({
-        method: HTTP_METHODS.POST,
-        url: `${API_BASE_URL}/user/api/forget-password/`,
-        data: data,
-        headers: API_HEADERS,
-      });
+      const response = await apiClient.post("/user/api/forget-password/", data);
       successToast(response, "OTP sent successfully to email");
       toNavigate();
     } catch (error) {
@@ -122,12 +101,7 @@ export const resetPasswordAction =
   async () => {
     setIsLoading(true);
     try {
-      const response = await axios({
-        method: HTTP_METHODS.POST,
-        url: `${API_BASE_URL}/user/api/verify-otp/`,
-        data: data,
-        headers: API_HEADERS,
-      });
+      const response = await apiClient.post("/user/api/verify-otp/", data);
       successToast(response, "Password reset successfully");
       toNavigate();
     } catch (error) {
@@ -141,12 +115,12 @@ export const ChangePasswordAction =
   ({ data, setButtonLoader, token, reset }) =>
   async (dispatch) => {
     setButtonLoader(true);
-    const localHeader = { ...API_HEADERS, Authorization: `Token ${token}` };
+    const localHeader = {
+      ...apiClient.defaults.headers,
+      Authorization: `Token ${token}`,
+    };
     try {
-      const response = await axios({
-        method: HTTP_METHODS.PUT,
-        url: `${API_BASE_URL}/user/api/changepassword/`,
-        data: data,
+      const response = await apiClient.put("/user/api/changepassword/", data, {
         headers: localHeader,
       });
       successToast(response, "Password changed successfully");
@@ -159,11 +133,12 @@ export const ChangePasswordAction =
   };
 
 export const logoutAction = (token) => async (dispatch) => {
-  const localHeader = { ...API_HEADERS, Authorization: `Token ${token}` };
+  const localHeader = {
+    ...apiClient.defaults.headers,
+    Authorization: `Token ${token}`,
+  };
   try {
-    const response = await axios({
-      method: HTTP_METHODS.GET,
-      url: `${API_BASE_URL}/user/api/logout/`,
+    const response = await apiClient.get("/user/api/logout/", {
       headers: localHeader,
     });
     successToast(response, "Logged out successfully");
@@ -175,11 +150,12 @@ export const logoutAction = (token) => async (dispatch) => {
 };
 
 export const refreshTokenAction = (token) => async (dispatch) => {
-  const localHeader = { ...API_HEADERS, Authorization: `Token ${token}` };
+  const localHeader = {
+    ...apiClient.defaults.headers,
+    Authorization: `Token ${token}`,
+  };
   try {
-    const response = await axios({
-      method: HTTP_METHODS.GET,
-      url: `${API_BASE_URL}/user/api/refresh-token/`,
+    const response = await apiClient.get("/user/api/refresh-token/", {
       headers: localHeader,
     });
     dispatch(login(response.data));

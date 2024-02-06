@@ -1,4 +1,6 @@
-export const API_BASE_URL = "https://bnmindia-server.onrender.com";
+import axios from "axios";
+
+export const API_BASE_URL = "https://bnmindia-server.onrender.com/api/v1";
 
 export const NGROK_URL = "";
 export const NGROK_TOKEN = "";
@@ -16,6 +18,13 @@ export const HTTP_METHODS = {
   PUT: "PUT",
   DELETE: "DELETE",
 };
+
+// Create an Axios instance for API requests
+export const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  // withCredentials: true,
+  timeout: 120000,
+});
 
 // HTTP status codes
 export const HTTP_STATUS_CODES = {

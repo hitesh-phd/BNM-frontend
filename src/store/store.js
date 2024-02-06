@@ -5,9 +5,11 @@ import { thunk } from "redux-thunk";
 import storage from "redux-persist/lib/storage";
 
 import AuthSlice from "./AuthSlice";
+import ChatSlice from "./ChatSlice";
 
 const reducers = combineReducers({
   Auth: AuthSlice,
+  Chat: ChatSlice,
 });
 
 const persistConfig = {
