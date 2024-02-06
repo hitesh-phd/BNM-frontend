@@ -1,24 +1,30 @@
-# Product Landing Page Template
+# React + TypeScript + Vite
 
-This gorgeous responsive website is a static landing page built with React, styled-components, react-router, and react hooks. All the components are reusable and can be used for any dynamic content. It's fully responsive for all the platforms and hosted using Netlify
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-# Description 
+Currently, two official plugins are available:
 
-This is a static landing page ususally used for marketting of products. You can navigate to different pages possible due to react-router. I always wanted to learn styled-components and building a project is a practical way to learn it.
-The only challenge I faced is using styled-components, it was intimidating at first and since I used regular CSS and SASS it was weird without any classnames. Atleast styled-components are similar to SASS in terms of nesting. I also need to get used to the different folder structure you make while using styled-components. Anyways I refered to this doc - [styled component doc](https://styled-components.com/).
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## Expanding the ESLint configuration
 
-[Click here to see the live demo](https://ultra-b73fc5.netlify.app/)
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-# Tech Stack
-* React
-* Styled Components
-* React Router
-* React Hooks
+- Configure the top-level `parserOptions` property like this:
 
-# Screenshot
-<img src="./UltraDesktop.png" alt="the screenshot of the app large screen"/>
-<img src="./UltraIPhone.png" alt="the screenshot of the app large screen"/>
+```js
+export default {
+  // other rules...
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+  },
+}
+```
 
-# Credits
-@briandesign
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
