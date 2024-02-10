@@ -12,6 +12,8 @@ const InputField = forwardRef((props, ref) => {
     type,
     icon,
     error = "",
+    rightIcon = null,
+    handleRightIconClick,
     ...otherProps
   } = props;
 
@@ -33,17 +35,24 @@ const InputField = forwardRef((props, ref) => {
               {...otherProps}
             ></textarea>
           ) : (
-            <input
-              className={twMerge(
-                `w-full h-13 px-3.5 bg-n-1/90 border-2 border-n-1/50 rounded-lg base2  text-n-7 outline-none transition-colors placeholder:text-n-4/50 focus:bg-white  ${
-                  icon && "pl-[3.125rem]"
-                } `,
-                classInput
+            <>
+              <input
+                className={twMerge(
+                  `w-full h-13 px-3.5 bg-n-1/90 border-2 border-n-1/50 rounded-lg base2  text-n-7 outline-none transition-colors placeholder:text-n-4/50 focus:bg-white relative  ${
+                    icon && "pl-[3.125rem]"
+                  } `,
+                  classInput
+                )}
+                ref={ref}
+                type={type || "text"}
+                {...otherProps}
+              />
+              {rightIcon && (
+                <div className="absolute top-3.5 right-4 fill-n-4/50 cursor-pointer transition-colors">
+                  {rightIcon}
+                </div>
               )}
-              ref={ref}
-              type={type || "text"}
-              {...otherProps}
-            />
+            </>
           )}
           <Icon
             className={`absolute top-3.5 left-4 fill-n-4/50 pointer-events-none transition-colors $`}

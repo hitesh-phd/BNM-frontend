@@ -15,6 +15,7 @@ import { ROUTES } from "./utils/RouterConfig";
 import TopBar from "./components/TopBar";
 import HomePage from "./pages/HomePage";
 import { selectIsAuthenticated } from "./store/AuthSlice";
+import { EditProfilePage } from "./pages/EditProfilePage";
 
 function App() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -30,11 +31,10 @@ function App() {
         />
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<div>About</div>} />
-          <Route path="/contact" element={<div>Contact</div>} />
         </Route>
         <Route path={ROUTES.SIGN_IN} element={<SignInPage />} />
         <Route path={ROUTES.SIGN_UP} element={<SignUpPage />} />
+        <Route path={ROUTES.EDIT_PROFILE} element={<EditProfilePage />} />
       </>
     )
   );
