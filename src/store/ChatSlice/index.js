@@ -12,7 +12,7 @@ export const ChatSlice = createSlice({
   initialState,
   reducers: {
     getUserChats: (state, action) => {
-      const { data } = action.payload?.data || {};
+      state.data = action.payload?.data || {};
       state.isLoaded = true;
     },
   },
@@ -36,7 +36,6 @@ export const getUserChatsAction =
       onSuccess();
       successToast(response, "Logged in successfully");
     } catch (error) {
-      debugger;
       errorToast({ error });
     } finally {
       setIsLoading(false);

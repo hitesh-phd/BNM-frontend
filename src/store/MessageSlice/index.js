@@ -37,7 +37,6 @@ export const getAllMessagesAction =
       onSuccess();
       successToast(response, "Messages loaded successfully");
     } catch (error) {
-      debugger;
       errorToast({ error });
     } finally {
       setIsLoading(false);
@@ -60,7 +59,6 @@ export const sendMessageAction =
       onSuccess();
       successToast(response, "Message sent successfully");
     } catch (error) {
-      debugger;
       errorToast({ error });
     } finally {
       setIsLoading(false);
