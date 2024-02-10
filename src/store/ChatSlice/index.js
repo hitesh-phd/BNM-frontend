@@ -13,7 +13,7 @@ export const ChatSlice = createSlice({
   initialState,
   reducers: {
     getUserChats: (state, action) => {
-      const { data } = action.payload?.data || {};
+      state.data = action.payload?.data || {};
       state.isLoaded = true;
     },
   },
