@@ -3,7 +3,9 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string } from "yup";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 import InputField from "@/components/InputField";
 import RingLoader from "@/components/Loaders/RingLoader";
@@ -11,16 +13,27 @@ import AuthContainer from "@/components/Container/AuthContainer";
 import { ROUTES } from "@/utils/RouterConfig";
 import { errorToast } from "@/utils/helper";
 import { API_BASE_URL, HTTP_METHODS, API_HEADERS } from "@/utils/https";
+import { registerAction } from "@/store/AuthSlice";
+
+const passwordRegex =
+  "/^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])(?=.*[a-zA-Z]).{8,}$/";
 
 const signUpFormSchema = object().shape({
-  gstNumber: string().required("GST Number is a required field"),
-  username: string().required("Username is a required field"),
+  // gstNumber: string().required("GST Number is a required field"),
+  // username: string().required("Username is a required field"),
   email: string()
     .email("Email is invalid")
     .required("Email is a required field"),
-  password: string()
-    .required("Password is a required field")
-    .min(8, "Password is too short - should be 8 chars minimum."),
+  password: string().required("Password is a required field"),
+  // .test(
+  //   "password",
+  //   "Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character and minimum 8 characters.",
+  //   (value) => {
+  //     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+  //       value
+  //     );
+  //   }
+  // ),
   confirmPassword: string()
     .test("passwords-match", "Passwords must match", function (value) {
       return this.parent.password === value;
@@ -30,19 +43,32 @@ const signUpFormSchema = object().shape({
 
 const SignUpPage = ({ onClick }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isUserNameVerified, setUserNameVerified] = useState(null);
   const [isGstNumberVerified, setGstNumberVerified] = useState(null);
   const [isVerifyingGstNumber, setVerifyingGstNumber] = useState(false);
   const [isVerifyingUserName, setVerifyingUserName] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
+  });
 
   const form = useForm({
+    // defaultValues: {
+    //   gstNumber: "",
+    //   username: "",
+    //   email: "",
+    //   password: "",
+    //   confirmPassword: "",
+    // },
     defaultValues: {
-      gstNumber: "",
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      gstNumber: "12345ABCD",
+      username: "Sagar",
+      email: "ksnayak24@gmail.com",
+      password: "Test@123",
+      confirmPassword: "Test@123",
     },
     resolver: yupResolver(signUpFormSchema),
   });
@@ -53,15 +79,21 @@ const SignUpPage = ({ onClick }) => {
     formState: { errors },
   } = form;
 
+  const navigateToEditProfile = () => {
+    navigate(ROUTES.EDIT_PROFILE, {
+      state: { email: form.getValues("email"), from: ROUTES.SIGN_UP },
+    });
+  };
+
   const onSubmit = (data) => {
-    if (!isGstNumberVerified) {
-      errorToast({ message: "GST Number is not verified, please verify it" });
-      return;
-    }
-    if (!isUserNameVerified) {
-      errorToast({ message: "Username is not verified, please verify it" });
-      return;
-    }
+    // if (!isGstNumberVerified) {
+    //   errorToast({ message: "GST number is not verified, please verify it" });
+    //   return;
+    // }
+    // if (!isUserNameVerified) {
+    //   errorToast({ message: "Username is not verified, please verify it" });
+    //   return;
+    // }
     const payload = {
       email: data.email,
       gstNumber: data.gstNumber,
@@ -69,7 +101,13 @@ const SignUpPage = ({ onClick }) => {
       username: data.username,
       role: "USER",
     };
-    console.log("payload", payload);
+    dispatch(
+      registerAction({
+        data: payload,
+        setIsLoading,
+        onSuccess: navigateToEditProfile,
+      })
+    );
   };
 
   // Function for navigate to Sign Up page
@@ -79,7 +117,7 @@ const SignUpPage = ({ onClick }) => {
 
   // Function for username input field change
   const handleUserNameChange = (e) => {
-    const username = e.target.value;
+    const username = e.target.value.toLowerCase();
     form.setValue("username", username);
     setUserNameVerified(null);
   };
@@ -133,6 +171,28 @@ const SignUpPage = ({ onClick }) => {
     }
   };
 
+  const toggleShowPassword = (name) => {
+    setShowPassword((prevState) => ({
+      ...prevState,
+      [name]: !prevState[name],
+    }));
+  };
+
+  const RenderPasswordIcon = ({ name }) =>
+    showPassword[name] ? (
+      <IoEyeOutline
+        className="w-6 h-6 cursor-pointer fill-n-4/50"
+        title="Hide password"
+        onClick={() => toggleShowPassword(name)}
+      />
+    ) : (
+      <IoEyeOffOutline
+        className="w-6 h-6 cursor-pointer fill-n-4/50"
+        title="Show password"
+        onClick={() => toggleShowPassword(name)}
+      />
+    );
+
   return (
     <AuthContainer>
       <div className="w-full mx-auto sm:max-w-xl">
@@ -142,6 +202,7 @@ const SignUpPage = ({ onClick }) => {
         <form action="" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-end justify-between mb-4 gap-x-4">
             <InputField
+              name="gstNumber"
               label="GST Number"
               className="w-full "
               classInput={`bg-n-2 border-n-2 focus:bg-n-1 ${
@@ -150,7 +211,7 @@ const SignUpPage = ({ onClick }) => {
               ${isGstNumberVerified === true && "border-green-500"}
               `}
               placeholder="Enter GST Number"
-              type="number"
+              type="text"
               autoComplete="off"
               error={errors.gstNumber?.message}
               {...register("gstNumber", {
@@ -176,6 +237,7 @@ const SignUpPage = ({ onClick }) => {
           </div>
           <div className="flex items-end justify-between mb-4 gap-x-4">
             <InputField
+              name="username"
               label="Username"
               className="w-full"
               classInput={`bg-n-2 border-n-2 focus:bg-n-1 ${
@@ -207,6 +269,7 @@ const SignUpPage = ({ onClick }) => {
             </button>
           </div>
           <InputField
+            name="email"
             label="Email"
             className="mb-4"
             classInput="bg-n-2 border-n-2 focus:bg-n-1"
@@ -217,27 +280,35 @@ const SignUpPage = ({ onClick }) => {
             {...register("email")}
           />
           <InputField
+            name="password"
             label="Password"
             className="mb-2"
             classInput="bg-n-2 border-n-2"
             placeholder="Enter at least 8+ characters "
-            type="password"
             autoComplete="current-password"
+            type={showPassword.password ? "text" : "password"}
+            rightIcon={<RenderPasswordIcon name="password" />}
             error={errors.password?.message}
             {...register("password")}
           />
           <InputField
+            name="confirmPassword"
             label="Confirm Password"
             className="mb-2"
             classInput="bg-n-2 border-n-2"
             placeholder="Enter at least 8+ characters "
-            type="password"
             autoComplete="Confirm-password"
+            type={showPassword.confirmPassword ? "text" : "password"}
+            rightIcon={<RenderPasswordIcon name="confirmPassword" />}
             error={errors.confirmPassword?.message}
             {...register("confirmPassword")}
           />
           <button className="w-full my-5 btn-blue btn-large" type="submit">
-            {!isLoading ? <p>Sign up</p> : <RingLoader />}
+            {!isLoading ? (
+              <p>Sign up</p>
+            ) : (
+              <RingLoader ringClassName="border-white w-8 h-8 mx-auto" />
+            )}
           </button>
           <div className="text-center text-black">
             Already have an account?{" "}
