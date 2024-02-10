@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string } from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 import InputField from "@/components/InputField";
 import Icon from "@/components/Icon";
@@ -24,6 +25,7 @@ const SignInPage = ({ onClick }) => {
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -65,6 +67,21 @@ const SignInPage = ({ onClick }) => {
     navigate(ROUTES.SIGN_UP);
   };
 
+  const RenderPasswordIcon = () =>
+    showPassword ? (
+      <IoEyeOutline
+        className="w-6 h-6 cursor-pointer fill-n-4/50"
+        title="Hide password"
+        onClick={() => setShowPassword(false)}
+      />
+    ) : (
+      <IoEyeOffOutline
+        className="w-6 h-6 cursor-pointer fill-n-4/50"
+        title="Show password"
+        onClick={() => setShowPassword(true)}
+      />
+    );
+
   return (
     <AuthContainer>
       <div className="w-full mx-auto sm:max-w-xl">
@@ -87,8 +104,10 @@ const SignInPage = ({ onClick }) => {
             className="mb-2"
             classInput="bg-n-2 border-n-2"
             placeholder="Enter at least 8+ characters "
-            type="password"
+            type={showPassword ? "text" : "password"}
             autoComplete="current-password"
+            rightIcon={<RenderPasswordIcon />}
+            handleRightIconClick={() => {}}
             error={errors.password?.message}
             {...register("password")}
           />
