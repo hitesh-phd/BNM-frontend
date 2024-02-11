@@ -63,3 +63,31 @@ export const formatChatTimestamp = (timestamp) => {
     return formattedDate;
   }
 };
+
+export const formatPostTimestamp = (timestamp) => {
+  const currentDate = new Date();
+  const postDate = new Date(timestamp);
+
+  const timeDifference = currentDate - postDate;
+  const seconds = Math.floor(timeDifference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const weeks = Math.floor(days / 7);
+  const months = Math.floor(days / 30);
+  const years = Math.floor(days / 365);
+
+  if (hours < 1) {
+    return `${minutes}min`;
+  } else if (hours < 24) {
+    return `${hours}hr`;
+  } else if (days < 7) {
+    return `${days}d`;
+  } else if (weeks < 4) {
+    return `${weeks}w`;
+  } else if (months < 12) {
+    return `${months}mo`;
+  } else {
+    return `${years}yr`;
+  }
+};
