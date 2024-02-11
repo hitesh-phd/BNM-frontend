@@ -3,6 +3,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { errorToast, successToast } from "@/utils/helper";
 import { apiClient } from "@/utils/https";
+import axiosInstance from "@/utils/axiosInstance";
 
 const initialState = {
   messages: [],

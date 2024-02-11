@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { errorToast, successToast } from "@/utils/helper";
 import { apiClient } from "@/utils/https";
+import axiosInstance from "@/utils/axiosInstance";
 
 const initialState = {
   data: null,
@@ -27,7 +28,7 @@ export const getUserChatsAction =
         ...apiClient.defaults.headers,
         Authorization: `Bearer ${token}`,
       };
-      const response = await apiClient.get(
+      const response = await axiosInstance.get(
         "/bnm/chats",
         { headers: localHeader },
         data
@@ -36,7 +37,7 @@ export const getUserChatsAction =
       onSuccess();
       successToast(response, "Logged in successfully");
     } catch (error) {
-      debugger;
+      // debugger;
       errorToast({ error });
     } finally {
       setIsLoading(false);

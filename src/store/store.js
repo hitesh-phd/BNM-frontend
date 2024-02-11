@@ -12,9 +12,7 @@ const reducers = combineReducers({
   Auth: AuthSlice,
   Chat: ChatSlice,
   Profile: ProfileSlice,
-})
-
-
+});
 
 const persistConfig = {
   key: "root",

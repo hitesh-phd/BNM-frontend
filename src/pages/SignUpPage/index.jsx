@@ -15,25 +15,24 @@ import { errorToast } from "@/utils/helper";
 import { API_BASE_URL, HTTP_METHODS, API_HEADERS } from "@/utils/https";
 import { registerAction } from "@/store/AuthSlice";
 
-const passwordRegex =
+const PASSWORD_REGEX =
   "/^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])(?=.*[a-zA-Z]).{8,}$/";
 
 const signUpFormSchema = object().shape({
-  // gstNumber: string().required("GST Number is a required field"),
-  // username: string().required("Username is a required field"),
+  gstNumber: string().required("GST Number is a required field"),
+  username: string().required("Username is a required field"),
   email: string()
     .email("Email is invalid")
     .required("Email is a required field"),
-  password: string().required("Password is a required field"),
-  // .test(
-  //   "password",
-  //   "Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character and minimum 8 characters.",
-  //   (value) => {
-  //     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-  //       value
-  //     );
-  //   }
-  // ),
+  password: string()
+    .required("Password is a required field")
+    .test(
+      "password",
+      "Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character and minimum 8 characters.",
+      (value) => {
+        return new RegExp(PASSWORD_REGEX).test(value);
+      }
+    ),
   confirmPassword: string()
     .test("passwords-match", "Passwords must match", function (value) {
       return this.parent.password === value;
@@ -56,19 +55,12 @@ const SignUpPage = ({ onClick }) => {
   });
 
   const form = useForm({
-    // defaultValues: {
-    //   gstNumber: "",
-    //   username: "",
-    //   email: "",
-    //   password: "",
-    //   confirmPassword: "",
-    // },
     defaultValues: {
-      gstNumber: "12345ABCD",
-      username: "Sagar",
-      email: "ksnayak24@gmail.com",
-      password: "Test@123",
-      confirmPassword: "Test@123",
+      gstNumber: "",
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
     resolver: yupResolver(signUpFormSchema),
   });
@@ -79,21 +71,25 @@ const SignUpPage = ({ onClick }) => {
     formState: { errors },
   } = form;
 
-  const navigateToEditProfile = () => {
-    navigate(ROUTES.EDIT_PROFILE, {
-      state: { email: form.getValues("email"), from: ROUTES.SIGN_UP },
-    });
+  // const navigateToEditProfile = () => {
+  //   navigate(ROUTES.EDIT_PROFILE, {
+  //     state: { email: form.getValues("email"), from: ROUTES.SIGN_UP },
+  //   });
+  // };
+
+  const navigateToSigInPage = () => {
+    navigate(ROUTES.SIGN_IN);
   };
 
   const onSubmit = (data) => {
-    // if (!isGstNumberVerified) {
-    //   errorToast({ message: "GST number is not verified, please verify it" });
-    //   return;
-    // }
-    // if (!isUserNameVerified) {
-    //   errorToast({ message: "Username is not verified, please verify it" });
-    //   return;
-    // }
+    if (!isGstNumberVerified) {
+      errorToast({ message: "GST number is not verified, please verify it" });
+      return;
+    }
+    if (!isUserNameVerified) {
+      errorToast({ message: "Username is not verified, please verify it" });
+      return;
+    }
     const payload = {
       email: data.email,
       gstNumber: data.gstNumber,
@@ -105,7 +101,7 @@ const SignUpPage = ({ onClick }) => {
       registerAction({
         data: payload,
         setIsLoading,
-        onSuccess: navigateToEditProfile,
+        onSuccess: navigateToSigInPage,
       })
     );
   };
