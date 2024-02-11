@@ -7,14 +7,16 @@ import storage from "redux-persist/lib/storage";
 import AuthSlice from "./AuthSlice";
 import ProfileSlice from "./ProfileSlice";
 import ChatSlice from "./ChatSlice";
+import MessageSlice from "./MessageSlice";
+import PostSlice from "./PostSlice";
 
 const reducers = combineReducers({
   Auth: AuthSlice,
   Chat: ChatSlice,
   Profile: ProfileSlice,
-})
-
-
+  Message: MessageSlice,
+  Post: PostSlice,
+});
 
 const persistConfig = {
   key: "root",
