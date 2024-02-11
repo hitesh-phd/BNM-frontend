@@ -4,14 +4,15 @@ import { RxAvatar } from "react-icons/rx";
 import { BiLike } from "react-icons/bi";
 import { GoCommentDiscussion } from "react-icons/go";
 import { GoBookmark, GoBookmarkFill } from "react-icons/go";
+import { formatPostTimestamp } from "@/utils/helper";
 
 const Post = ({
-  name,
-  avatar,
   title,
   content,
+  author,
   images,
   createdAt,
+  updatedAt,
   likes,
   comments,
   isBookmarked,
@@ -20,12 +21,19 @@ const Post = ({
   return (
     <div className="p-4 bg-white rounded-md shadow ring-1 ring-n-3 ring-opacity-50">
       <div className="flex gap-4">
-        <RxAvatar className="w-10 h-10" />
+        {author?.avatar?.url ? (
+          <img
+            className="object-cover w-10 h-10 rounded-full"
+            src={author.avatar.url}
+          ></img>
+        ) : (
+          <RxAvatar className="w-10 h-10" />
+        )}
         <div className="flex flex-col">
-          <p className="font-semibold">{name}</p>
-          <p className="text-xs">
-            {format(new Date(createdAt), "MMM dd, yyyy")}
+          <p className="font-semibold">
+            {author.ownerFullName ? author.ownerFullName : author.username}
           </p>
+          <p className="text-xs">{formatPostTimestamp(updatedAt)}</p>
         </div>
       </div>
 
