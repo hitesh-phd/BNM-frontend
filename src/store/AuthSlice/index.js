@@ -25,6 +25,13 @@ export const AuthSlice = createSlice({
       // clear the state to initial state
       Object.assign(state, initialState);
     },
+    register: (state, action) => {
+      const { accessToken, refreshToken, user } = action.payload?.data || {};
+      state.isAuthenticated = true;
+      state.userId = user._id;
+      state.token = accessToken;
+      state.refreshToken = refreshToken;
+    },
   },
 });
 
@@ -61,7 +68,7 @@ export const googleLoginAction =
   };
 
 export const registerAction =
-  ({ data, setIsLoading }) =>
+  ({ data, setIsLoading, onSuccess }) =>
   async () => {
     setIsLoading(true);
     try {
@@ -69,13 +76,26 @@ export const registerAction =
       // redirect to login page
       window.location.href = "/login";
       successToast("", "Registered successfully");
+      onSuccess();
     } catch (error) {
-      const errorData = error?.response?.data?.error;
-      if (typeof errorData === "object") {
-        errorToast({ message: Object.values(errorData)[0] });
-      } else {
-        errorToast({ error, duration: 11000, style: { minWidth: "80%" } });
-      }
+      // console.log("error", error);
+      errorToast({ error, message: error.message });
+
+      // const errorData = error?.response?.data?.errors;
+      // // extract first error message from errorData object where key  name is unknown
+
+      // if (typeof errorData === "object") {
+      //   console.log("errorData", errorData);
+      //   // errorToast({ message: errorData[0] });
+      //   // Iterate over each error object in the response and display the error
+      //   errorData.forEach((errorObj) => {
+      //     const errorKey = Object.keys(errorObj)[0]; // Assuming each error object has only one key
+      //     const errorMessage = errorObj[errorKey];
+      //     errorToast({ message: errorMessage });
+      //   });
+      // } else {
+      //   errorToast({ error, message: error.message });
+      // }
     } finally {
       setIsLoading(false);
     }
