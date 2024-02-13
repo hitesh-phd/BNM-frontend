@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
+import { IoMdPersonAdd } from "react-icons/io";
 
 import SearchInput from "@/components/SearchUsers";
 import { DUMMY_USERS } from "../constant";
+import { useSelector } from "react-redux";
+import { selectRequestList } from "@/store/ConnectionSlice";
 
 // Maximum users to show
 const MAXIMUM_USERS = 10;
 
 export const RequestTab = () => {
+  const connectionRequestsData = useSelector(selectRequestList);
+  console.log("connectionRequestsData", connectionRequestsData);
   const [ConnectionData, setConnectionData] = useState(DUMMY_USERS);
 
   return (
@@ -32,18 +37,14 @@ export const RequestTab = () => {
                 {user.firstName + " " + user.lastName}
               </div>
             </div>
-            <div className="flex gap-3">
-              <button className={twMerge("btn-primary", "h-8 w-20")}>
+            <div className="flex ">
+              {/* <button className={twMerge("btn-primary", "h-8 w-20")}>
                 Accept
-              </button>
-              <button
-                className={twMerge(
-                  "btn",
-                  "h-8 px-2 hover:bg-gray-100 border-0"
-                )}
-              >
-                X
-              </button>
+              </button> */}
+              <IoMdPersonAdd
+                size={25}
+                className="text-black transition-all cursor-pointer hover:text-green-700 hover:scale-105"
+              />
             </div>
           </div>
         ))}

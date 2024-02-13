@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Tab } from "@headlessui/react";
 import ConnectionTab from "./ConnectionTab";
 import { RequestTab } from "./RequestTab";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUserName } from "@/store/AuthSlice";
+import { fetchConnectionListAction } from "@/store/ConnectionSlice";
 
 // Define the names of the tabs for navigation
 const TAB_NAVIGATION = ["Connections", "Requests"];
@@ -13,6 +16,14 @@ const TAB_COMPONENTS = {
 };
 
 const ConnectionPageTab = () => {
+  const userName = useSelector(selectUserName);
+  const dispatch = useDispatch();
+
+  const [loader, setLoader] = useState(false);
+
+  useEffect(() => {
+    dispatch(fetchConnectionListAction({ username: userName, setLoader }));
+  }, [dispatch, userName]);
   return (
     <div>
       <div className="mx-auto">
@@ -20,7 +31,7 @@ const ConnectionPageTab = () => {
           <Tab.List className="flex flex-wrap justify-around my-4 mb-6">
             {TAB_NAVIGATION.map((button, index) => (
               <Tab
-                className="h-12 text-sm transition-colors border-0 md:text-lg base1 text-n-5 hover:text-primary-1 ui-selected:border-3 ui-selected:border-primary-1 ui-selected:rounded-3xl ui-selected:text-n-1 ui-selected:p-2 ui-selected:px-4 ui-selected:font-medium ui-selected:bg-primary-1 ui-selected:shadow-lg ui-selected:hover:text-white "
+                className="h-12 p-2 text-sm transition-colors duration-300 ease-in-out border-0 md:text-lg base1 text-n-5 hover:text-primary-1 rounded-3xl ui-selected:border-3 ui-selected:border-primary-1 ui-selected:text-n-1 ui-selected:font-medium ui-selected:bg-primary-1 ui-selected:hover:text-white"
                 key={index}
               >
                 {button}
