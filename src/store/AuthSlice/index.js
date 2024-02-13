@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiClient } from "@/utils/https";
 import { errorToast, successToast } from "@/utils/helper";
+import axiosInstance from "@/utils/axiosInstance";
 
 const initialState = {
   isAuthenticated: false,
@@ -72,7 +73,7 @@ export const registerAction =
   async () => {
     setIsLoading(true);
     try {
-      await apiClient.post("/user/api/register/", data);
+      await apiClient.post("/users/register", data);
       // redirect to login page
       window.location.href = "/login";
       successToast("", "Registered successfully");
@@ -80,22 +81,6 @@ export const registerAction =
     } catch (error) {
       // console.log("error", error);
       errorToast({ error, message: error.message });
-
-      // const errorData = error?.response?.data?.errors;
-      // // extract first error message from errorData object where key  name is unknown
-
-      // if (typeof errorData === "object") {
-      //   console.log("errorData", errorData);
-      //   // errorToast({ message: errorData[0] });
-      //   // Iterate over each error object in the response and display the error
-      //   errorData.forEach((errorObj) => {
-      //     const errorKey = Object.keys(errorObj)[0]; // Assuming each error object has only one key
-      //     const errorMessage = errorObj[errorKey];
-      //     errorToast({ message: errorMessage });
-      //   });
-      // } else {
-      //   errorToast({ error, message: error.message });
-      // }
     } finally {
       setIsLoading(false);
     }
@@ -155,10 +140,10 @@ export const ChangePasswordAction =
 export const logoutAction = (token) => async (dispatch) => {
   const localHeader = {
     ...apiClient.defaults.headers,
-    Authorization: `Token ${token}`,
+    // Authorization: `Token ${token}`,
   };
   try {
-    const response = await apiClient.get("/user/api/logout/", {
+    const response = await axiosInstance.post("/users/logout/", {
       headers: localHeader,
     });
     successToast(response, "Logged out successfully");
