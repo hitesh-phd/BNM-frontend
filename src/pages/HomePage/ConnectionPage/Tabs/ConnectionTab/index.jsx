@@ -11,14 +11,6 @@ const MAXIMUM_USERS = 10;
 const ConnectionTab = () => {
   const [ConnectionData, setConnectionData] = useState(DUMMY_USERS);
 
-  // useEffect(() => {
-  //   const fetchConnectionData = async () => {
-  //     const { data } = await axios.get("https://dummyjson.com/users");
-  //     setConnectionData(data?.users);
-  //   };
-  //   fetchConnectionData();
-  // }, []);
-
   return (
     <div className="flex flex-col gap-4">
       <SearchInput />

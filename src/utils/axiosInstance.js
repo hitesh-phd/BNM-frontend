@@ -2,12 +2,11 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { differenceInMilliseconds, fromUnixTime } from "date-fns";
 import { API_BASE_URL } from "./https";
-import { store } from "@/store/store";
 
-// const persistRoot = JSON.parse(localStorage.getItem("persist:root"));
-// const authJson = persistRoot ? JSON.parse(persistRoot?.Auth) : null;
-// const authTokens = authJson?.token;
-// const refreshToken = authJson?.refreshToken;
+const persistRoot = JSON.parse(localStorage.getItem("persist:root"));
+const authJson = persistRoot ? JSON.parse(persistRoot?.Auth) : null;
+let authTokens = authJson?.token;
+const refreshToken = authJson?.refreshToken;
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -15,22 +14,9 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(async (req) => {
-  const persistRoot = JSON.parse(localStorage.getItem("persist:root"));
-  const authJson = persistRoot ? JSON.parse(persistRoot?.Auth) : null;
-  let authTokens = authJson?.token;
-  const refreshToken = authJson?.refreshToken;
-  req.headers.Authorization = `Bearer ${authTokens}`;
-
-  if (!authTokens) {
-    const persistRoot = JSON.parse(localStorage.getItem("persist:root"));
-    const authJson = persistRoot ? JSON.parse(persistRoot?.Auth) : null;
-    authTokens = authJson?.token;
-    req.headers.Authorization = `Bearer ${authTokens}`;
-  }
-
+  if (!authTokens) return req;
   const user = jwtDecode(authTokens);
 
-  // 20 days before expiry
   const isExpired =
     differenceInMilliseconds(fromUnixTime(user.exp), new Date()) < 0;
 

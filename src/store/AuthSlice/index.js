@@ -7,6 +7,7 @@ import axiosInstance from "@/utils/axiosInstance";
 const initialState = {
   isAuthenticated: false,
   userId: null,
+  userName: null,
   token: null,
   refreshToken: null,
 };
@@ -19,8 +20,20 @@ export const AuthSlice = createSlice({
       const { accessToken, refreshToken, user } = action.payload?.data || {};
       state.isAuthenticated = true;
       state.userId = user._id;
+      state.userName = user.username;
       state.token = accessToken;
       state.refreshToken = refreshToken;
+      localStorage.setItem(
+        "persist:root",
+        JSON.stringify({
+          Auth: JSON.stringify({
+            ...state,
+            token: accessToken,
+            refreshToken: refreshToken,
+            userName: user.username,
+          }),
+        })
+      );
     },
     logout: (state) => {
       // clear the state to initial state
@@ -170,6 +183,7 @@ export const refreshTokenAction = (token) => async (dispatch) => {
 };
 
 export const selectUserId = (state) => state.Auth.userId;
+export const selectUserName = (state) => state.Auth.userName;
 export const selectToken = (state) => state.Auth.token;
 export const selectRefreshToken = (state) => state.Auth.refreshToken;
 export const selectIsAuthenticated = (state) => state.Auth.isAuthenticated;
