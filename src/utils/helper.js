@@ -67,14 +67,19 @@ export const formatChatTimestamp = (timestamp) => {
 export const formatPostTimestamp = (timestamp) => {
   const currentDate = new Date();
   const postDate = new Date(timestamp);
-
   const timeDifference = currentDate - postDate;
   const seconds = Math.floor(timeDifference / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
+  const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
   const weeks = Math.floor(days / 7);
-  const months = Math.floor(days / 30);
+
+  // Calculate the difference in months directly
+  const months =
+    currentDate.getMonth() -
+    postDate.getMonth() +
+    (currentDate.getFullYear() - postDate.getFullYear()) * 12;
+
   const years = Math.floor(days / 365);
 
   if (hours < 1) {
@@ -88,6 +93,11 @@ export const formatPostTimestamp = (timestamp) => {
   } else if (months < 12) {
     return `${months}mo`;
   } else {
-    return `${years}yr`;
+    const formattedYears = years > 0 ? `${years}yr` : "";
+    const formattedMonths = months > 0 ? `${months}mo` : "";
+    const formattedWeeks = weeks > 0 ? `${weeks}w` : "";
+    const formattedDays = days > 0 ? `${days}d` : "";
+
+    return `${formattedYears}${formattedMonths}${formattedWeeks}${formattedDays}`;
   }
 };
