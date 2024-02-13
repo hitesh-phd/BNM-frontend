@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-
+import { useDispatch } from "react-redux";
 import {
-  AiOutlineHome,
   AiOutlineUserSwitch,
   AiOutlineSearch,
   AiOutlineMessage,
@@ -15,6 +14,7 @@ import logo from "@/assets/svg/logo.svg";
 
 import SearchUsers from "../SearchUsers";
 import { ROUTES } from "@/utils/RouterConfig";
+import { logoutAction } from "@/store/AuthSlice";
 
 const MAX_TAB_WIDTH = 1023;
 
@@ -49,6 +49,7 @@ export default function TopBar({ currentUser }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const isTabView = useMediaQuery({
     query: `(max-width: ${MAX_TAB_WIDTH}px)`,
@@ -108,8 +109,12 @@ export default function TopBar({ currentUser }) {
     onChange: openUser,
   };
 
+  const handleLogout = () => {
+    dispatch(logoutAction());
+  };
+
   return (
-    <div className="relative flex items-center justify-between w-full h-20 bg-white border-b bg-opacity-85">
+    <div className="fixed top-0 left-0 right-0 z-20 flex flex-row items-center justify-between w-full h-20 px-4 bg-white border-b shadow-md md:px-8 ">
       <div className="flex w-2/4 gap-18 ">
         <img className="w-20 ml-4 md:w-28 " src={logo} alt="BNMLogo" />
         {!isTabView && <SearchUsers {...searchBarProps} />}
@@ -144,19 +149,8 @@ export default function TopBar({ currentUser }) {
             />
           )}
 
-          <NavLink to={ROUTES.HOME}>
-            {({ isActive, isPending, isTransitioning }) => (
-              <AiOutlineHome
-                // size={isActive ? 35 : 30}
-                size={30}
-                className={`text-gray-500 cursor-pointer hover:text-black ${
-                  isActive && "text-black"
-                }`}
-              />
-            )}
-          </NavLink>
           <NavLink to={ROUTES.CONNECTIONS}>
-            {({ isActive, isPending, isTransitioning }) => (
+            {({ isActive }) => (
               <AiOutlineUserSwitch
                 // size={isActive ? 35 : 30}
                 size={30}
@@ -167,7 +161,7 @@ export default function TopBar({ currentUser }) {
             )}
           </NavLink>
           <NavLink to={ROUTES.MESSAGES}>
-            {({ isActive, isPending, isTransitioning }) => (
+            {({ isActive }) => (
               <AiOutlineMessage
                 // size={isActive ? 35 : 30}
                 size={30}
@@ -178,7 +172,7 @@ export default function TopBar({ currentUser }) {
             )}
           </NavLink>
           <NavLink to={ROUTES.NOTIFICATIONS}>
-            {({ isActive, isPending, isTransitioning }) => (
+            {({ isActive }) => (
               <AiOutlineBell
                 // size={isActive ? 35 : 30}
                 size={30}
@@ -193,13 +187,13 @@ export default function TopBar({ currentUser }) {
               className="object-cover w-10 h-10 rounded-full cursor-pointer"
               src={currentUser?.imageLink}
               alt="user"
-              onClick={displayPopup}
+              onClick={handleLogout}
             />
           ) : (
             <HiOutlineUserCircle
               size={30}
               className="text-gray-500 cursor-pointer hover:text-black"
-              onClick={displayPopup}
+              onClick={handleLogout}
             />
           )}
         </div>
